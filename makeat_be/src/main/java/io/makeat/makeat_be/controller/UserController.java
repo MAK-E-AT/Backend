@@ -21,11 +21,12 @@ public class UserController {
      * @param loginRequest
      * @return UserInfo
      */
-    @PostMapping
+    @GetMapping
     public UserInfo responseUser(
-            @RequestBody LoginRequest loginRequest
+            @RequestBody LoginRequest loginRequest,
+            @RequestHeader("Authorization") String authorization
     ) {
-
+        // service로 들어가는 로직
         return null;
     }
 
