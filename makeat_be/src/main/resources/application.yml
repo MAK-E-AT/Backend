@@ -17,6 +17,10 @@ kakao:
   client_id: 0658266bd27dd7c683f32dc7aecb3faf
   redirect_url: http://localhost:8080/user/kakao
 
+naver:
+  client_id: DrQR_W4Xbc77w5QsAX6M
+  secret_id: Hp7DGQH1Sa
+
 logging:
   level:
     org.hibernate.sql: debug
