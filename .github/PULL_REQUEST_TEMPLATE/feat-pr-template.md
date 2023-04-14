@@ -2,15 +2,14 @@
 
 Please provide a brief summary of the feature.
 
-## Reason for Feature
+## Detials
 
 Please provide a brief explanation of why this feature is needed.
-
-## Proposed Changes
-
-Please describe the proposed changes in detail.
 
 ## Dependencies
 
 Please list any dependencies required for this feature.
 
+## etc.
+
+If there is anything else or change, please fill it out.
