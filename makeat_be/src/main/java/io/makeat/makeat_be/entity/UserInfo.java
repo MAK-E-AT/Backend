@@ -20,7 +20,7 @@ public class UserInfo {
     private int age;
 
     @Enumerated(EnumType.STRING)
-    private InfoGender gender; // M, W
+    private String gender; // M, W
 
     private float height;
 
