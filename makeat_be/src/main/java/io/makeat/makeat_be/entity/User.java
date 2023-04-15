@@ -19,5 +19,5 @@ public class User {
     private String loginKind;
 
     @Column(name = "login_id")
-    private Long loginId;
+    private String loginId;   // 해당 간편로그인시 인증서버에서 가져올 id
 }
