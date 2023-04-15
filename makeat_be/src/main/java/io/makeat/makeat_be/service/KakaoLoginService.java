@@ -1,5 +1,7 @@
 package io.makeat.makeat_be.service;
 
+import io.makeat.makeat_be.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -79,7 +81,6 @@ public class KakaoLoginService {
         return tokens;
     }
 
-
     public Map<String, Object> getUserInfo(String access_token) throws IOException {
         String host = "https://kapi.kakao.com/v2/user/me";
         Map<String, Object> result = new HashMap<>();
@@ -111,11 +112,11 @@ public class KakaoLoginService {
             JSONObject properties = (JSONObject) obj.get("properties");
 
 
-            //String id = obj.get("id").toString();
+            String id = obj.get("id").toString();
             String nickname = properties.get("nickname").toString();
             String gender = kakao_account.get("gender").toString();
 
-            //result.put("id", id);
+            result.put("id", id);
             result.put("nickname", nickname);
             result.put("gender", gender);
 
