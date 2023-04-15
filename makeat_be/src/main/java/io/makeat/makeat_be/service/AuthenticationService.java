@@ -8,12 +8,5 @@ import org.springframework.web.client.RestTemplate;
  * access 토큰이 유효한 토큰인지 확인하는 로직
  */
 public class AuthenticationService {
-//    @Autowired
-//    private RestTemplate restTemplate;
-//
-//    public boolean validateAccessToken(String accessToken){
-//        String url = "https://example.com/oauth2/tokeninfo?access_token=" + accessToken;
-//
-//    }
 
 }
