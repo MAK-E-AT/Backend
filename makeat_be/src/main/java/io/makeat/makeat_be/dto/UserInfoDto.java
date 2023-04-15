@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class UserInfo {
+public class UserInfoDto {
     private int age;
 
     private String gender;
