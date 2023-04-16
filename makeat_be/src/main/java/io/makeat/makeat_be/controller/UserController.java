@@ -8,6 +8,7 @@ import io.makeat.makeat_be.repository.UserRepository;
 import io.makeat.makeat_be.service.KakaoLoginService;
 import io.makeat.makeat_be.service.LoginService;
 import io.makeat.makeat_be.service.NaverLoginService;
+import io.makeat.makeat_be.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -16,6 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -51,6 +54,9 @@ public class UserController {
 
     @Autowired
     LoginService loginService;
+
+    @Autowired
+    UserService userService;
 
     @GetMapping("/kakao")
     public ResponseEntity getKakaoCI(@RequestParam String code, Model model) throws IOException{
@@ -172,11 +178,27 @@ public class UserController {
      * @param userInfoDto
      */
     @PostMapping("/info")
-    public void saveUserInfo(
-            @RequestHeader("Authorization") String authorization,
+    public ResponseEntity saveUserInfo(
+            Authentication authentication,
             @RequestBody UserInfoDto userInfoDto
     ) {
+        HttpHeaders headers = new HttpHeaders();
 
+        // Authentication에서 loginId와 loginKind 가져오기
+        String loginKind = (String) authentication.getCredentials();
+        String loginId = authentication.getName();
+
+        // User 정보 가져오기
+        Optional<User> user = userRepository.findUserByLoginKindAndLoginId(loginKind, loginId);
+        if (user == null) {
+            // 검증되지 않은 사용자라면 404 에러 반환
+            return new ResponseEntity(null, headers, HttpStatus.BAD_REQUEST);
+        }
+
+        // 사용자 정보 저장
+        userService.saveUserInfo(userInfoDto);
+
+        return new ResponseEntity(null, headers, HttpStatus.OK);
     }
 
     @PutMapping("/info")

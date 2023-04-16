@@ -19,7 +19,6 @@ public class UserInfo {
 
     private int age;
 
-    @Enumerated(EnumType.STRING)
     private String gender; // M, W
 
     private float height;
