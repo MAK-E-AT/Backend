@@ -60,18 +60,13 @@ public class UserController {
 
     @GetMapping("/kakao")
     public ResponseEntity getKakaoCI(@RequestParam String code, Model model) throws IOException{
-        String[] tokens = ks.getToken(code);
-        String access_token = tokens[0];
-        String refresh_token = tokens[1];
-        Map<String, Object> userInfo = ks.getUserInfo(access_token);
-        //model.addAttribute("code", code);
-        model.addAttribute("access_token", access_token);
-        model.addAttribute("refresh_token", refresh_token);
-        model.addAttribute("userInfo", userInfo);
+
+        //인증코드로 토큰, 유저정보 GET
+        String token = ks.getToken(code);
+        Map<String, Object> userInfo = ks.getUserInfo(token);
 
         // jwt를 생성하는 로직
         String jwt = loginService.login("kakao", (String) userInfo.get("loginId"));
-
 
         //ci는 비즈니스 전환후 검수신청 -> 허락받아야 수집 가능
 
@@ -101,38 +96,13 @@ public class UserController {
 
     @GetMapping("/naver")
     public ResponseEntity getNaverCI(@RequestParam String code, Model model) throws IOException, ParseException {
-        //인증코드로 토큰 받아오는 코드
-        //액세스, 리프레쉬 코드 model에 저장
 
-        String[] tokens = ns.getToken(code);
-        String access_token = tokens[0];
-        String refresh_token = tokens[1];
-
-        //여기까지가 액세스, 리프레쉬토큰값 받아오기
-
-        String header = "Bearer " + access_token; // Bearer 다음에 공백 추가
-        String apiURL = "https://openapi.naver.com/v1/nid/me";
-
-        Map<String, String> requestHeaders = new HashMap<>();
-        requestHeaders.put("Authorization", header);
-        model.addAttribute("access_token", access_token);
-        model.addAttribute("refresh_token", refresh_token);
-
-        //사용자정보 json ns.getApi(apiURL,requestHeaders)
-        JSONParser jsonParser = new JSONParser();
-        JSONObject jsonObj = (JSONObject) jsonParser.parse(ns.getApi(apiURL,requestHeaders));
-        JSONObject response = (JSONObject) jsonObj.get("response");
-
-        String id = response.get("id").toString();
-        String name = response.get("name").toString();
-        String gender = response.get("gender").toString();
-
-        model.addAttribute("id, id");
-        model.addAttribute("name", name);
-        model.addAttribute("gender", gender);
-
+        //인증코드로 토큰, 유저정보 GET
+        String token = ns.getToken(code);
+        Map<String, Object> userInfo = ns.getUserInfo(token);
 
         // jwt를 생성하는 로직
+        String id = (String) userInfo.get("id");
         String jwt = loginService.login("naver", id);
 
         // ci는 비즈니스 전환후 검수신청 -> 허락받아야 수집 가능
