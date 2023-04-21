@@ -1,6 +1,7 @@
 package io.makeat.makeat_be.service;
 
 // 네이버 API 예제 - 회원프로필 조회
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +16,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-
+@Slf4j
 @Service
 public class NaverLoginService {
 
@@ -52,7 +53,7 @@ public class NaverLoginService {
             bw.flush();
 
             int responseCode = urlConnection.getResponseCode();
-            System.out.println("responseCode = " + responseCode);
+            log.info("responseCode = " + responseCode);
 
             BufferedReader br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
             String line = "";
@@ -60,14 +61,14 @@ public class NaverLoginService {
             while ((line = br.readLine()) != null) {
                 result += line;
             }
-            System.out.println("result = " + result);
+            log.info("result = " + result);
 
             // json parsing
             JSONParser parser = new JSONParser();
             JSONObject elem = (JSONObject) parser.parse(result);
 
             token = elem.get("token").toString();
-            System.out.println("access_token = " + token);
+            log.info("access_token = " + token);
 
             br.close();
             bw.close();

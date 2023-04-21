@@ -1,6 +1,7 @@
 package io.makeat.makeat_be.service;
 
 import io.makeat.makeat_be.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+@Slf4j
 @Service
 public class KakaoLoginService {
 
@@ -51,7 +53,7 @@ public class KakaoLoginService {
             bw.flush();
 
             int responseCode = urlConnection.getResponseCode();
-            System.out.println("responseCode = " + responseCode);
+            log.info("responseCode = " + responseCode);
 
 
             BufferedReader br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
@@ -60,14 +62,14 @@ public class KakaoLoginService {
             while ((line = br.readLine()) != null) {
                 result += line;
             }
-            System.out.println("result = " + result);
+            log.info("result = " + result);
 
             // json parsing
             JSONParser parser = new JSONParser();
             JSONObject elem = (JSONObject) parser.parse(result);
 
             token = elem.get("access_token").toString();
-            System.out.println("access_token = " + token);
+            log.info("access_token = " + token);
             br.close();
             bw.close();
         } catch (IOException e) {
@@ -94,7 +96,7 @@ public class KakaoLoginService {
             urlConnection.setRequestMethod("GET");
 
             int responseCode = urlConnection.getResponseCode();
-            System.out.println("responseCode = " + responseCode);
+            log.info("responseCode = " + responseCode);
 
             BufferedReader br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
             String line = "";
@@ -104,7 +106,7 @@ public class KakaoLoginService {
                 res+=line;
             }
 
-            System.out.println("res = " + res);
+            log.info("res = " + res);
 
             JSONParser parser = new JSONParser();
             JSONObject obj = (JSONObject) parser.parse(res);

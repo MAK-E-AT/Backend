@@ -60,16 +60,13 @@ public class UserController {
 
     @GetMapping("/kakao")
     public ResponseEntity getKakaoCI(@RequestParam String code, Model model) throws IOException{
-        
+
         //인증코드로 토큰, 유저정보 GET
         String token = ks.getToken(code);
         Map<String, Object> userInfo = ks.getUserInfo(token);
 
-        System.out.println("jun");
         // jwt를 생성하는 로직
         String jwt = loginService.login("kakao", (String) userInfo.get("loginId"));
-
-        System.out.println("hu");
 
         //ci는 비즈니스 전환후 검수신청 -> 허락받아야 수집 가능
 
