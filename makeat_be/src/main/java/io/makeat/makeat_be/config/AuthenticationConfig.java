@@ -14,6 +14,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 public class AuthenticationConfig {
+
+    @Bean
+    public JwtFilter jwtFilter() {
+        return new JwtFilter();
+    }
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, JwtFilter jwtFilter) throws Exception {
         return httpSecurity
@@ -30,10 +35,5 @@ public class AuthenticationConfig {
                 .and()
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
-    }
-
-    @Bean
-    public JwtFilter jwtFilter() {
-        return new JwtFilter();
     }
 }
