@@ -114,22 +114,32 @@ public class UserController {
             @RequestBody UserInfoDto userInfoDto
     ) {
         String userPk = (String) authentication.getCredentials();
+
         if (userPk == null) {
             // 검증되지 않은 사용자라면 404 에러 반환
             return new ResponseEntity(null, null, HttpStatus.BAD_REQUEST);
         }
 
         // 사용자 정보 저장
-        userService.saveUserInfo(userInfoDto);
+        userService.saveUserInfo(userInfoDto, userPk);
 
         return new ResponseEntity(null, null, HttpStatus.OK);
     }
 
     @PutMapping("/info")
-    public void modifyUserInfo(
-            @RequestHeader("Authorization") String authorization,
-            @RequestBody UserInfoDto userInfoDto
+    public ResponseEntity modifyUserInfo(
+            @RequestBody UserInfoDto userInfoDto,
+            Authentication authentication
     ) {
+        String userPk = (String) authentication.getCredentials();
+        if (userPk == null) {
+            // 검증되지 않은 사용자라면 404 에러 반환
+            return new ResponseEntity(null, null, HttpStatus.BAD_REQUEST);
+        }
 
+        // 사용자 수정
+        userService.modifyUserInfo(userInfoDto, userPk);
+
+        return new ResponseEntity(null, null, HttpStatus.OK);
     }
 }

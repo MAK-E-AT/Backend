@@ -52,10 +52,10 @@ public class UserService {
         }
     }
 
-    public void saveUserInfo(UserInfoDto userInfoDto) {
+    public void saveUserInfo(UserInfoDto userInfoDto, String userPk) {
 
         UserInfo userInfo = new UserInfo();
-        User user = new User();
+        User user = userRepository.findById(userPk).get();
         userInfo.setUser(user);
         userInfo.setAge(userInfoDto.getAge());
         userInfo.setGender(userInfoDto.getGender());
@@ -81,5 +81,18 @@ public class UserService {
         userInfoDto.setBmi(userInfo.getBmi());
 
         return userInfoDto;
+    }
+
+    public void modifyUserInfo(UserInfoDto userInfoDto, String userPk) {
+        User user = userRepository.findById(userPk).get();
+        UserInfo userInfo = userInfoRepository.findUserInfoByUser(Optional.ofNullable(user));
+
+        userInfo.setAge(userInfoDto.getAge());
+        userInfo.setGender(userInfoDto.getGender());
+        userInfo.setHeight(userInfoDto.getHeight());
+        userInfo.setWeight(userInfoDto.getWeight());
+        userInfo.setBmi(userInfoDto.getBmi());
+
+        userInfoRepository.save(userInfo);
     }
 }
