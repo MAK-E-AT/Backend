@@ -6,24 +6,19 @@ import io.makeat.makeat_be.entity.UserInfo;
 import io.makeat.makeat_be.repository.UserInfoRepository;
 import io.makeat.makeat_be.repository.UserRepository;
 import io.makeat.makeat_be.service.KakaoLoginService;
-import io.makeat.makeat_be.service.LoginService;
 import io.makeat.makeat_be.service.NaverLoginService;
 import io.makeat.makeat_be.service.UserService;
 import lombok.extern.slf4j.Slf4j;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -47,92 +42,58 @@ public class UserController {
     NaverLoginService ns;
 
     @Autowired
-    UserRepository userRepository;
-
-    @Autowired
-    UserInfoRepository userInfoRepository;
-
-    @Autowired
-    LoginService loginService;
-
-    @Autowired
     UserService userService;
 
     @GetMapping("/kakao")
-    public ResponseEntity getKakaoCI(@RequestParam String code, Model model) throws IOException{
+    public ResponseEntity getKakaoCI(@RequestParam String code) throws IOException{
 
         //인증코드로 토큰, 유저정보 GET
         String token = ks.getToken(code);
         Map<String, Object> userInfo = ks.getUserInfo(token);
 
-        // jwt를 생성하는 로직
-        String jwt = loginService.login("kakao", (String) userInfo.get("loginId"));
 
-        //ci는 비즈니스 전환후 검수신청 -> 허락받아야 수집 가능
-
-        String id = (String) userInfo.get("id");
-        Optional<User> user = userRepository.findUserByLoginKindAndLoginId("kakao", id);
-
-        if (user.isPresent()) {
-            UserInfo UserInfo1 = userInfoRepository.findUserInfoByUser(user);
-            UserInfoDto userInfoDto = new UserInfoDto();
-
-            userInfoDto.setAge(UserInfo1.getAge());
-            userInfoDto.setGender(UserInfo1.getGender());
-            userInfoDto.setHeight(UserInfo1.getHeight());
-            userInfoDto.setWeight(UserInfo1.getWeight());
-            userInfoDto.setBmi(UserInfo1.getBmi());
-
-            // HttpHeaders에 jwt를 담아서 프론트로 전달
-            HttpHeaders headers = new HttpHeaders();
-            headers.add("Authorization", "Bearer " + jwt);
-
-            return new ResponseEntity(userInfoDto, headers, HttpStatus.OK);
+        // user 확인 및 신규 유저 저장
+        Optional<User> user = userService.login("kakao", userInfo.get("id").toString());
+        if (user.isEmpty()) {
+            return new ResponseEntity(null, null, HttpStatus.BAD_REQUEST);
         }
 
+        // jwt 생성
+        String accessJwt = userService.createJwt(user.get().getUserId().toString());
+
+        //헤더에 accessJwt 담기
         HttpHeaders headers = new HttpHeaders();
-        return new ResponseEntity(null, headers, HttpStatus.BAD_REQUEST);
+        headers.add("Authorization", "Bearer " + accessJwt);
+
+        UserInfoDto userInfoDto = userService.getUserInfo(user.get());
+
+        return new ResponseEntity(userInfoDto, headers, HttpStatus.OK);
     }
 
     @GetMapping("/naver")
-    public ResponseEntity getNaverCI(@RequestParam String code, Model model) throws IOException, ParseException {
+    public ResponseEntity getNaverCI(@RequestParam String code) throws IOException, ParseException {
 
         //인증코드로 토큰, 유저정보 GET
         String token = ns.getToken(code);
         Map<String, Object> userInfo = ns.getUserInfo(token);
 
-        // jwt를 생성하는 로직
-        String id = (String) userInfo.get("id");
-        String jwt = loginService.login("naver", id);
-
-        // ci는 비즈니스 전환후 검수신청 -> 허락받아야 수집 가능
-        Optional<User> user = userRepository.findUserByLoginKindAndLoginId("naver", id);
-        if (user.isPresent()) {
-            UserInfo UserInfo1 = userInfoRepository.findUserInfoByUser(user);
-            UserInfoDto userInfoDto = new UserInfoDto();
-
-            userInfoDto.setAge(UserInfo1.getAge());
-            userInfoDto.setGender(UserInfo1.getGender());
-            userInfoDto.setHeight(UserInfo1.getHeight());
-            userInfoDto.setWeight(UserInfo1.getWeight());
-            userInfoDto.setBmi(UserInfo1.getBmi());
-
-            // HttpHeaders에 jwt를 담아서 프론트로 전달
-            HttpHeaders headers = new HttpHeaders();
-            headers.add("Authorization", "Bearer " + jwt);
-
-            return new ResponseEntity(userInfoDto, headers, HttpStatus.OK);
+        // user 확인 및 신규 유저 저장
+        Optional<User> user = userService.login("kakao", userInfo.get("id").toString());
+        if (user.isEmpty()) {
+            return new ResponseEntity(null, null, HttpStatus.BAD_REQUEST);
         }
 
+        // jwt 생성
+        String accessJwt = userService.createJwt(user.get().getUserId().toString());
+
+        //헤더에 accessJwt 담기
         HttpHeaders headers = new HttpHeaders();
-        return new ResponseEntity(null, headers, HttpStatus.BAD_REQUEST);
+        headers.add("Authorization", "Bearer " + accessJwt);
+
+        UserInfoDto userInfoDto = userService.getUserInfo(user.get());
+
+        return new ResponseEntity(userInfoDto, headers, HttpStatus.OK);
     }
-
-
-    /**
-     * 요청이 올때마다 jwt를 인코딩해서 사용자 정보를 검증해야햐는구나
-     *
-     */
 
     @DeleteMapping
     public void deleteUser(
@@ -152,23 +113,16 @@ public class UserController {
             Authentication authentication,
             @RequestBody UserInfoDto userInfoDto
     ) {
-        HttpHeaders headers = new HttpHeaders();
-
-        // Authentication에서 loginId와 loginKind 가져오기
-        String loginKind = (String) authentication.getCredentials();
-        String loginId = authentication.getName();
-
-        // User 정보 가져오기
-        Optional<User> user = userRepository.findUserByLoginKindAndLoginId(loginKind, loginId);
-        if (user == null) {
+        String userPk = (String) authentication.getCredentials();
+        if (userPk == null) {
             // 검증되지 않은 사용자라면 404 에러 반환
-            return new ResponseEntity(null, headers, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(null, null, HttpStatus.BAD_REQUEST);
         }
 
         // 사용자 정보 저장
         userService.saveUserInfo(userInfoDto);
 
-        return new ResponseEntity(null, headers, HttpStatus.OK);
+        return new ResponseEntity(null, null, HttpStatus.OK);
     }
 
     @PutMapping("/info")
