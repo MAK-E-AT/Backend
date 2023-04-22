@@ -95,4 +95,12 @@ public class UserService {
 
         userInfoRepository.save(userInfo);
     }
+
+    public void deleteUser(String userPk) {
+        User user = userRepository.findById(userPk).get();
+        UserInfo userInfo = userInfoRepository.findUserInfoByUser(Optional.ofNullable(user));
+
+        userInfoRepository.delete(userInfo);
+        userRepository.delete(user);
+    }
 }

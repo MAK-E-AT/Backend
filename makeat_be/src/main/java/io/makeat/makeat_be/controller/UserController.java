@@ -96,10 +96,17 @@ public class UserController {
     }
 
     @DeleteMapping
-    public void deleteUser(
-            @RequestHeader("Authorization") String authorization
+    public ResponseEntity<String> deleteUser(
+            Authentication authentication
     ) {
+        String userPk = (String) authentication.getCredentials();
+        if (userPk == null) {
+            // 검증되지 않은 사용자라면 404 에러 반환
+            return new ResponseEntity(null, null, HttpStatus.BAD_REQUEST);
+        }
 
+        userService.deleteUser(userPk);
+        return new ResponseEntity(null, null, HttpStatus.OK);
     }
 
     /**
