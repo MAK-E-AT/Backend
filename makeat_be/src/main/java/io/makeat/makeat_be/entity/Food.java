@@ -10,8 +10,12 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-public class Total {
-    @Id @GeneratedValue
-    @Column(name = "total_id")
-    private long totalId;
+public class Food {
+
+    @Id
+    @GeneratedValue
+    @Column(name = "food_id")
+    private long foodId;
+
+    private String foodName;
 }

@@ -12,11 +12,11 @@ public class DietRecord {
 
     @Id @GeneratedValue
     @Column(name = "record_id")
-    private Long recordId;
+    private long recordId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "total_id")
-    private Total total;
+    private NutrientTotal nutrientTotal;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -26,7 +26,7 @@ public class DietRecord {
     @JoinColumn(name = "nutrient_id")
     private Nutrient nutrient;
 
-    private MealImg mealImg;
+    private String imgUrl;
 
     private String date;
 
