@@ -12,7 +12,7 @@ public class UserInfo {
     @Id
     @GeneratedValue
     @Column(name = "info_id")
-    private Long infoId;
+    private long infoId;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
