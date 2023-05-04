@@ -25,7 +25,7 @@ import java.util.Optional;
 
 @Slf4j
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/v1/user")
 @RequiredArgsConstructor
 public class UserController {
     KakaoLoginService ks;
@@ -46,7 +46,7 @@ public class UserController {
         }
 
         // jwt 생성
-        String accessJwt = userService.createJwt(user.getUserId().toString());
+        String accessJwt = userService.createJwt(String.valueOf(user.getUserId()));
 
         //헤더에 accessJwt 담기
         HttpHeaders headers = new HttpHeaders();
@@ -71,7 +71,7 @@ public class UserController {
         }
 
         // jwt 생성
-        String accessJwt = userService.createJwt(user.getUserId().toString());
+        String accessJwt = userService.createJwt(String.valueOf(user.getUserId()));
 
         //헤더에 accessJwt 담기
         HttpHeaders headers = new HttpHeaders();
