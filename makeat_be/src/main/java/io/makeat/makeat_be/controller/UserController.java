@@ -28,8 +28,12 @@ import java.util.Optional;
 @RequestMapping("/v1/user")
 @RequiredArgsConstructor
 public class UserController {
+
+    @Autowired
     KakaoLoginService ks;
+    @Autowired
     NaverLoginService ns;
+    @Autowired
     UserService userService;
 
     @GetMapping("/kakao")
