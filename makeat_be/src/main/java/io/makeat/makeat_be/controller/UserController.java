@@ -28,13 +28,10 @@ import java.util.Optional;
 @RequestMapping("/v1/user")
 @RequiredArgsConstructor
 public class UserController {
+    private final KakaoLoginService ks;
+    private final NaverLoginService ns;
+    private final UserService userService;
 
-    @Autowired
-    KakaoLoginService ks;
-    @Autowired
-    NaverLoginService ns;
-    @Autowired
-    UserService userService;
 
     @GetMapping("/kakao")
     public ResponseEntity getKakaoCI(@RequestParam String code) throws IOException{
@@ -69,7 +66,7 @@ public class UserController {
         Map<String, Object> userInfo = ns.getUserInfo(token);
 
         // user 확인 및 신규 유저 저장
-        User user = userService.login("kakao", userInfo.get("id").toString());
+        User user = userService.login("naver", userInfo.get("id").toString());
         if (user==null) {
             return new ResponseEntity(null, null, HttpStatus.BAD_REQUEST);
         }
