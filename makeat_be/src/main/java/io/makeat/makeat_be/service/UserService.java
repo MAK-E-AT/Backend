@@ -24,9 +24,9 @@ public class UserService {
 
     private Long expireMs = 1000 * 60 * 60 * 24L; // 24시간
 
-    UserInfoRepository userInfoRepository;
+    private final UserInfoRepository userInfoRepository;
 
-    UserRepository userRepository;
+    private final UserRepository userRepository;
 
     public String createJwt(String userPk) {
         return JwtUtil.createJwt(userPk, secret, expireMs);

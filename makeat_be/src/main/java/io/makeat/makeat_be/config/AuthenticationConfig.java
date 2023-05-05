@@ -18,8 +18,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class AuthenticationConfig {
 
-//    private final UserService userService;
-
     @Value("${jwt.secret}")
     private String secret;
 
@@ -31,8 +29,9 @@ public class AuthenticationConfig {
                 .cors().and()       // cors 사용 안함
                 .authorizeHttpRequests(
                         auth ->auth
-                                .requestMatchers("/user/naver").permitAll()  // 해당 url은 인증 안함
-                                .requestMatchers("/user/kakao").permitAll()
+                                .requestMatchers("/**").permitAll()
+//                                .requestMatchers("/user/naver").permitAll()  // 해당 url은 인증 안함
+//                                .requestMatchers("/user/kakao").permitAll()
                                 .anyRequest().authenticated()   // 나머지는 다 인증
 
                 )
