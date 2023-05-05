@@ -32,6 +32,7 @@ public class UserController {
     private final NaverLoginService ns;
     private final UserService userService;
 
+
     @GetMapping("/kakao")
     public ResponseEntity getKakaoCI(@RequestParam String code) throws IOException{
 
