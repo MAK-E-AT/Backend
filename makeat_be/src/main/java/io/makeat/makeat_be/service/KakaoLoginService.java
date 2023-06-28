@@ -29,11 +29,11 @@ public class KakaoLoginService {
      * @return
      * @throws IOException
      */
-    public String getToken(String code) throws IOException {
+    public String[] getTokens(String code) throws IOException {
 
         String host = "https://kauth.kakao.com/oauth/token";
         URL url = new URL(host);
-        String token = "";
+        String[] tokens = new String[2];
 
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
         try {
@@ -66,8 +66,10 @@ public class KakaoLoginService {
             JSONParser parser = new JSONParser();
             JSONObject elem = (JSONObject) parser.parse(result);
 
-            token = elem.get("access_token").toString();
-            log.info("access_token = " + token);
+            tokens[0] = elem.get("access_token").toString();
+            log.info("access_token = " + tokens[0]);
+            tokens[1] = elem.get("refresh_token").toString();
+            log.info("access_token = " + tokens[1]);
             br.close();
             bw.close();
         } catch (IOException e) {
@@ -75,7 +77,7 @@ public class KakaoLoginService {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        return token;
+        return tokens;
     }
 
     /**

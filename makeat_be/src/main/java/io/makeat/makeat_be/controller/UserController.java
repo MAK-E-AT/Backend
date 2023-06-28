@@ -8,6 +8,8 @@ import io.makeat.makeat_be.repository.UserRepository;
 import io.makeat.makeat_be.service.KakaoLoginService;
 import io.makeat.makeat_be.service.NaverLoginService;
 import io.makeat.makeat_be.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.parser.ParseException;
@@ -34,11 +36,13 @@ public class UserController {
 
 
     @GetMapping("/kakao")
-    public ResponseEntity getKakaoCI(@RequestParam String code) throws IOException{
+    public ResponseEntity getKakaoCI(HttpServletRequest request, @RequestParam String code) throws IOException{
 
         //인증코드로 토큰, 유저정보 GET
-        String token = ks.getToken(code);
-        Map<String, Object> userInfo = ks.getUserInfo(token);
+        String[] tokens = ks.getTokens(code);
+        String access_token = tokens[0];
+        String refresh_token = tokens[1];
+        Map<String, Object> userInfo = ks.getUserInfo(access_token);
 
         // user 확인 및 신규 유저 저장
         User user = userService.login("kakao", userInfo.get("id").toString());
@@ -46,16 +50,19 @@ public class UserController {
             return new ResponseEntity(null, null, HttpStatus.BAD_REQUEST);
         }
 
-        // jwt 생성
-        String accessJwt = userService.createJwt(String.valueOf(user.getUserId()));
+        // 카카오 userinfo에서 login_id, 이름, 성별 뽑기
+        String login_id = userInfo.get("id").toString();
+        String name = userInfo.get("nickname").toString();
+        String gender = userInfo.get("gender").toString();
 
-        //헤더에 accessJwt 담기
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer " + accessJwt);
+        // 이름, 성별, 액세스 토큰, 리프레쉬 토큰 세션에 등록
+        HttpSession session = request.getSession();
+        session.setAttribute("name", name);
+        session.setAttribute("gender", gender);
+        session.setAttribute("access_token", access_token);
+        session.setAttribute("refresh_token", refresh_token);
 
-        UserInfoDto userInfoDto = userService.getUserInfo(user);
-
-        return new ResponseEntity(userInfoDto, headers, HttpStatus.OK);
+        return new ResponseEntity<>(login_id, HttpStatus.OK);
     }
 
     @GetMapping("/naver")
@@ -71,16 +78,9 @@ public class UserController {
             return new ResponseEntity(null, null, HttpStatus.BAD_REQUEST);
         }
 
-        // jwt 생성
-        String accessJwt = userService.createJwt(String.valueOf(user.getUserId()));
-
-        //헤더에 accessJwt 담기
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer " + accessJwt);
-
         UserInfoDto userInfoDto = userService.getUserInfo(user);
 
-        return new ResponseEntity(userInfoDto, headers, HttpStatus.OK);
+        return new ResponseEntity(userInfoDto, null, HttpStatus.OK);
     }
 
     @DeleteMapping
