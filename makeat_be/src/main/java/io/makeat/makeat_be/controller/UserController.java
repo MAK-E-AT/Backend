@@ -46,16 +46,9 @@ public class UserController {
             return new ResponseEntity(null, null, HttpStatus.BAD_REQUEST);
         }
 
-        // jwt 생성
-        String accessJwt = userService.createJwt(String.valueOf(user.getUserId()));
-
-        //헤더에 accessJwt 담기
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer " + accessJwt);
-
         UserInfoDto userInfoDto = userService.getUserInfo(user);
 
-        return new ResponseEntity(userInfoDto, headers, HttpStatus.OK);
+        return new ResponseEntity(userInfoDto, null, HttpStatus.OK);
     }
 
     @GetMapping("/naver")
@@ -71,16 +64,9 @@ public class UserController {
             return new ResponseEntity(null, null, HttpStatus.BAD_REQUEST);
         }
 
-        // jwt 생성
-        String accessJwt = userService.createJwt(String.valueOf(user.getUserId()));
-
-        //헤더에 accessJwt 담기
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer " + accessJwt);
-
         UserInfoDto userInfoDto = userService.getUserInfo(user);
 
-        return new ResponseEntity(userInfoDto, headers, HttpStatus.OK);
+        return new ResponseEntity(userInfoDto, null, HttpStatus.OK);
     }
 
     @DeleteMapping
