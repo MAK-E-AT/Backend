@@ -50,13 +50,13 @@ public class UserService {
         return user;
     }
 
-    public void saveUserInfo(UserInfoDto userInfoDto, String userPk) {
-
-        User user = userRepository.findById(userPk).get();
-        UserInfo userInfo = new UserInfo(user, userInfoDto);
-
-        userInfoRepository.save(userInfo);
-    }
+//    public void saveUserInfo(UserInfoDto userInfoDto, String userPk) {
+//
+//        User user = userRepository.findById(userPk).get();
+//        UserInfo userInfo = new UserInfo(user, userInfoDto);
+//
+//        userInfoRepository.save(userInfo);
+//    }
 
     public UserInfoDto getUserInfo(User user) {
 

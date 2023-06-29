@@ -18,6 +18,8 @@ public class UserInfo {
     @JoinColumn(name = "user_id")
     private User user;
 
+    private String name;
+
     private int age;
 
     private String gender; // M, W
@@ -26,17 +28,25 @@ public class UserInfo {
 
     private float weight;
 
+    private float target_calories;
+
     private float bmi;
 
-    public UserInfo() {
-    }
+    private String access_token;
 
-    public UserInfo(User user, UserInfoDto userInfoDto) {
+    private String refresh_token;
+
+    public UserInfo(long infoId, User user, String name, int age, String gender, float height, float weight, float target_calories, float bmi, String access_token, String refresh_token) {
+        this.infoId = infoId;
         this.user = user;
-        this.age = userInfoDto.getAge();
-        this.gender = userInfoDto.getGender();
-        this.height = userInfoDto.getHeight();
-        this.weight = userInfoDto.getWeight();
-        this.bmi = userInfoDto.getBmi();
+        this.name = name;
+        this.age = age;
+        this.gender = gender;
+        this.height = height;
+        this.weight = weight;
+        this.target_calories = target_calories;
+        this.bmi = bmi;
+        this.access_token = access_token;
+        this.refresh_token = refresh_token;
     }
 }

@@ -77,7 +77,8 @@ public class UserController {
         String access_token = (String) session.getAttribute("access_token");
         String refresh_token = (String) session.getAttribute("refresh_token");
 
-        // 이정 세션 정보 + 추가정보 UserInfo 저장 - user검색, bmi 계산, entity 변수추가 필요
+        // 이전 세션 정보 + 추가정보 UserInfo 저장
+
 
         return new ResponseEntity<>("", HttpStatus.OK);
     }
