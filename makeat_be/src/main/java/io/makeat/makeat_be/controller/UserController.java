@@ -1,6 +1,7 @@
 package io.makeat.makeat_be.controller;
 
 import io.makeat.makeat_be.dto.AdditionalInfoDto;
+import io.makeat.makeat_be.dto.FirstInfoDto;
 import io.makeat.makeat_be.dto.SocialInfoDto;
 import io.makeat.makeat_be.dto.UserInfoDto;
 import io.makeat.makeat_be.entity.User;
@@ -53,11 +54,10 @@ public class UserController {
         String gender = userInfo.get("gender").toString();
 
         // 이름, 성별, 액세스 토큰, 리프레쉬 토큰 세션에 등록
+        FirstInfoDto firstInfoDto = new FirstInfoDto(name, gender, accessToken, refreshToken);
+
         HttpSession session = request.getSession();
-        session.setAttribute("name", name);
-        session.setAttribute("gender", gender);
-        session.setAttribute("accessToken", accessToken);
-        session.setAttribute("refreshToken", refreshToken);
+        session.setAttribute("firstInfoDto", firstInfoDto);
 
         return new ResponseEntity<>(loginId, HttpStatus.OK);
     }
@@ -67,12 +67,10 @@ public class UserController {
 
         // 이전에 세션에 등록된 정보 불러오기
         HttpSession session = request.getSession();
-        String name = (String) session.getAttribute("name");
-        String gender = (String) session.getAttribute("gender");
-        String accessToken = (String) session.getAttribute("accessToken");
-        String refreshToken = (String) session.getAttribute("refreshToken");
+        FirstInfoDto firstInfoDto = (FirstInfoDto) session.getAttribute("firstInfoDto");
 
         // 이전 세션 정보 + 추가정보 UserInfo 저장
+
 
 
         return new ResponseEntity<>("", HttpStatus.OK);
