@@ -70,8 +70,7 @@ public class UserController {
         FirstInfoDto firstInfoDto = (FirstInfoDto) session.getAttribute("firstInfoDto");
 
         // 이전 세션 정보 + 추가정보 UserInfo 저장
-
-
+        userService.saveUserInfo(socialInfoDto, additionalInfoDto, firstInfoDto);
 
         return new ResponseEntity<>("", HttpStatus.OK);
     }

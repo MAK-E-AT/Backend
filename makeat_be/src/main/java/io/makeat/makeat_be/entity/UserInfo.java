@@ -36,8 +36,7 @@ public class UserInfo {
 
     private String refreshToken;
 
-    public UserInfo(long infoId, User user, String name, int age, String gender, float height, float weight, float targetCalories, float bmi, String accessToken, String refreshToken) {
-        this.infoId = infoId;
+    public UserInfo(User user, String name, int age, String gender, float height, float weight, float targetCalories, float bmi, String accessToken, String refreshToken) {
         this.user = user;
         this.name = name;
         this.age = age;

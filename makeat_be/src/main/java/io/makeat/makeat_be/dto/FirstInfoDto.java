@@ -1,5 +1,11 @@
 package io.makeat.makeat_be.dto;
 
+
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class FirstInfoDto {
 
     private String name;
