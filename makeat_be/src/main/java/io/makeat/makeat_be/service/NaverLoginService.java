@@ -20,10 +20,10 @@ import java.util.Map;
 public class NaverLoginService {
 
     @Value("${naver.client_id}")
-    private String client_id;
+    private String clientId;
 
     @Value("${naver.secret_id}")
-    private String secret_id;
+    private String secretId;
 
 
     /**
@@ -44,7 +44,7 @@ public class NaverLoginService {
 
             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(urlConnection.getOutputStream()));
             StringBuilder sb = new StringBuilder();
-            sb.append("grant_type=authorization_code&client_id=" + client_id + "&client_secret=" + secret_id);
+            sb.append("grant_type=authorization_code&client_id=" + clientId + "&client_secret=" + secretId);
             sb.append("&code=" + code);
             sb.append("&state=9kgsGTfH4j7IyAkg");
 
@@ -67,7 +67,7 @@ public class NaverLoginService {
             JSONObject elem = (JSONObject) parser.parse(result);
 
             token = elem.get("access_token").toString();
-            log.info("access_token = " + token);
+            log.info("accessToken = " + token);
 
             br.close();
             bw.close();

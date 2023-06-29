@@ -28,15 +28,15 @@ public class UserInfo {
 
     private float weight;
 
-    private float target_calories;
+    private float targetCalories;
 
     private float bmi;
 
-    private String access_token;
+    private String accessToken;
 
-    private String refresh_token;
+    private String refreshToken;
 
-    public UserInfo(long infoId, User user, String name, int age, String gender, float height, float weight, float target_calories, float bmi, String access_token, String refresh_token) {
+    public UserInfo(long infoId, User user, String name, int age, String gender, float height, float weight, float targetCalories, float bmi, String accessToken, String refreshToken) {
         this.infoId = infoId;
         this.user = user;
         this.name = name;
@@ -44,9 +44,9 @@ public class UserInfo {
         this.gender = gender;
         this.height = height;
         this.weight = weight;
-        this.target_calories = target_calories;
+        this.targetCalories = targetCalories;
         this.bmi = bmi;
-        this.access_token = access_token;
-        this.refresh_token = refresh_token;
+        this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
     }
 }
