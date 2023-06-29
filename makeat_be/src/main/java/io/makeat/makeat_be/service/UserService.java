@@ -1,5 +1,8 @@
 package io.makeat.makeat_be.service;
 
+import io.makeat.makeat_be.dto.AdditionalInfoDto;
+import io.makeat.makeat_be.dto.FirstInfoDto;
+import io.makeat.makeat_be.dto.SocialInfoDto;
 import io.makeat.makeat_be.dto.UserInfoDto;
 import io.makeat.makeat_be.entity.User;
 import io.makeat.makeat_be.entity.UserInfo;
@@ -19,18 +22,11 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserService {
 
-    @Value("${jwt.secret}")
-    private String secret;
-
     private Long expireMs = 1000 * 60 * 60 * 24L; // 24시간
 
     private final UserInfoRepository userInfoRepository;
 
     private final UserRepository userRepository;
-
-    public String createJwt(String userPk) {
-        return JwtUtil.createJwt(userPk, secret, expireMs);
-    }
 
     /**
      * 회원가입
@@ -50,13 +46,19 @@ public class UserService {
         return user;
     }
 
-//    public void saveUserInfo(UserInfoDto userInfoDto, String userPk) {
-//
-//        User user = userRepository.findById(userPk).get();
-//        UserInfo userInfo = new UserInfo(user, userInfoDto);
-//
-//        userInfoRepository.save(userInfo);
-//    }
+    public void saveUserInfo(SocialInfoDto socialInfoDto, AdditionalInfoDto additionalInfoDto, FirstInfoDto firstInfoDto) {
+
+        // user
+        User user = userRepository.findUserByLoginKindAndLoginId(socialInfoDto.getLogin_kind(), socialInfoDto.getLogin_id());
+
+        // bmi
+        float bmi = additionalInfoDto.getWeight() / (additionalInfoDto.getHeight()/100 * additionalInfoDto.getHeight()/100);
+
+        // UserInfoRepository에 저장
+        UserInfo userInfo = new UserInfo(user, firstInfoDto.getName(), additionalInfoDto.getAge(), firstInfoDto.getGender(), additionalInfoDto.getHeight(), additionalInfoDto.getWeight(), additionalInfoDto.getTarget_calories(), bmi, firstInfoDto.getAccessToken(), firstInfoDto.getRefreshToken());
+
+        userInfoRepository.save(userInfo);
+    }
 
     public UserInfoDto getUserInfo(User user) {
 
