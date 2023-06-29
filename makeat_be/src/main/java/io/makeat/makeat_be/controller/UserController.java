@@ -1,5 +1,7 @@
 package io.makeat.makeat_be.controller;
 
+import io.makeat.makeat_be.dto.AdditionalInfoDto;
+import io.makeat.makeat_be.dto.SocialInfoDto;
 import io.makeat.makeat_be.dto.UserInfoDto;
 import io.makeat.makeat_be.entity.User;
 import io.makeat.makeat_be.entity.UserInfo;
@@ -64,6 +66,22 @@ public class UserController {
 
         return new ResponseEntity<>(login_id, HttpStatus.OK);
     }
+
+    @PostMapping("/additional-info")
+    public ResponseEntity saveAdditionalInfo (HttpServletRequest request, AdditionalInfoDto additionalInfoDto, SocialInfoDto socialInfoDto) throws IOException{
+
+        // 이전에 세션에 등록된 정보 불러오기
+        HttpSession session = request.getSession();
+        String name = (String) session.getAttribute("name");
+        String gender = (String) session.getAttribute("gender");
+        String access_token = (String) session.getAttribute("access_token");
+        String refresh_token = (String) session.getAttribute("refresh_token");
+
+        // 이정 세션 정보 + 추가정보 UserInfo 저장 - user검색, bmi 계산, entity 변수추가 필요
+
+        return new ResponseEntity<>("", HttpStatus.OK);
+    }
+
 
     @PostMapping("/naver")
     public ResponseEntity saveNaverUser(@RequestParam String code) throws IOException, ParseException {
