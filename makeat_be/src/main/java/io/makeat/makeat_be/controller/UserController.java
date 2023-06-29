@@ -1,10 +1,9 @@
 package io.makeat.makeat_be.controller;
 
+import io.makeat.makeat_be.dto.AdditionalInfoDto;
+import io.makeat.makeat_be.dto.SocialInfoDto;
 import io.makeat.makeat_be.dto.UserInfoDto;
 import io.makeat.makeat_be.entity.User;
-import io.makeat.makeat_be.entity.UserInfo;
-import io.makeat.makeat_be.repository.UserInfoRepository;
-import io.makeat.makeat_be.repository.UserRepository;
 import io.makeat.makeat_be.service.KakaoLoginService;
 import io.makeat.makeat_be.service.NaverLoginService;
 import io.makeat.makeat_be.service.UserService;
@@ -13,8 +12,6 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.parser.ParseException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -40,9 +37,9 @@ public class UserController {
 
         //인증코드로 토큰, 유저정보 GET
         String[] tokens = ks.getTokens(code);
-        String access_token = tokens[0];
-        String refresh_token = tokens[1];
-        Map<String, Object> userInfo = ks.getUserInfo(access_token);
+        String accessToken = tokens[0];
+        String refreshToken = tokens[1];
+        Map<String, Object> userInfo = ks.getUserInfo(accessToken);
 
         // user 확인 및 신규 유저 저장
         User user = userService.login("kakao", userInfo.get("id").toString());
@@ -50,8 +47,8 @@ public class UserController {
             return new ResponseEntity(null, null, HttpStatus.BAD_REQUEST);
         }
 
-        // 카카오 userinfo에서 login_id, 이름, 성별 뽑기
-        String login_id = userInfo.get("id").toString();
+        // 카카오 userinfo에서 loginId, 이름, 성별 뽑기
+        String loginId = userInfo.get("id").toString();
         String name = userInfo.get("nickname").toString();
         String gender = userInfo.get("gender").toString();
 
@@ -59,11 +56,28 @@ public class UserController {
         HttpSession session = request.getSession();
         session.setAttribute("name", name);
         session.setAttribute("gender", gender);
-        session.setAttribute("access_token", access_token);
-        session.setAttribute("refresh_token", refresh_token);
+        session.setAttribute("accessToken", accessToken);
+        session.setAttribute("refreshToken", refreshToken);
 
-        return new ResponseEntity<>(login_id, HttpStatus.OK);
+        return new ResponseEntity<>(loginId, HttpStatus.OK);
     }
+
+    @PostMapping("/additional-info")
+    public ResponseEntity saveAdditionalInfo (HttpServletRequest request, AdditionalInfoDto additionalInfoDto, SocialInfoDto socialInfoDto) throws IOException{
+
+        // 이전에 세션에 등록된 정보 불러오기
+        HttpSession session = request.getSession();
+        String name = (String) session.getAttribute("name");
+        String gender = (String) session.getAttribute("gender");
+        String accessToken = (String) session.getAttribute("accessToken");
+        String refreshToken = (String) session.getAttribute("refreshToken");
+
+        // 이전 세션 정보 + 추가정보 UserInfo 저장
+
+
+        return new ResponseEntity<>("", HttpStatus.OK);
+    }
+
 
     @PostMapping("/naver")
     public ResponseEntity saveNaverUser(@RequestParam String code) throws IOException, ParseException {
@@ -116,7 +130,7 @@ public class UserController {
         }
 
         // 사용자 정보 저장
-        userService.saveUserInfo(userInfoDto, userPk);
+//        userService.saveUserInfo(userInfoDto, userPk);
 
         return new ResponseEntity(null, null, HttpStatus.OK);
     }

@@ -19,9 +19,9 @@ import org.json.simple.parser.ParseException;
 public class KakaoLoginService {
 
     @Value("${kakao.client_id}")
-    private String client_id;
+    private String clientId;
     @Value("${kakao.redirect_url}")
-    private String redirect_url;
+    private String redirectUrl;
 
     /**
      * 인가 코드로 토큰 반환
@@ -43,8 +43,8 @@ public class KakaoLoginService {
             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(urlConnection.getOutputStream()));
             StringBuilder sb = new StringBuilder();
             sb.append("grant_type=authorization_code");
-            sb.append("&client_id=" + client_id);
-            sb.append("&redirect_uri=" + redirect_url);
+            sb.append("&clientId=" + clientId);
+            sb.append("&redirectUri=" + redirectUrl);
             sb.append("&code=" + code);
 
             bw.write(sb.toString());
@@ -67,9 +67,9 @@ public class KakaoLoginService {
             JSONObject elem = (JSONObject) parser.parse(result);
 
             tokens[0] = elem.get("access_token").toString();
-            log.info("access_token = " + tokens[0]);
+            log.info("accessToken = " + tokens[0]);
             tokens[1] = elem.get("refresh_token").toString();
-            log.info("access_token = " + tokens[1]);
+            log.info("accessToken = " + tokens[1]);
             br.close();
             bw.close();
         } catch (IOException e) {
@@ -110,12 +110,12 @@ public class KakaoLoginService {
 
             JSONParser parser = new JSONParser();
             JSONObject obj = (JSONObject) parser.parse(res);
-            JSONObject kakao_account = (JSONObject) obj.get("kakao_account");
+            JSONObject kakaoAccount = (JSONObject) obj.get("kakao_account");
             JSONObject properties = (JSONObject) obj.get("properties");
 
             String id = obj.get("id").toString();
             String nickname = properties.get("nickname").toString();
-            String gender = kakao_account.get("gender").toString();
+            String gender = kakaoAccount.get("gender").toString();
 
             result.put("id", id);
             result.put("nickname", nickname);
