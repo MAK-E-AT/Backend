@@ -34,7 +34,7 @@ public class UserController {
 
 
     @GetMapping("/kakao")
-    public ResponseEntity saveKakaoUser(HttpServletRequest request, @RequestParam String code) throws IOException{
+    public ResponseEntity saveKakaoUser(HttpServletRequest request, @RequestBody String code) throws IOException{
 
         //인증코드로 토큰, 유저정보 GET
         String[] tokens = ks.getTokens(code);
@@ -77,7 +77,7 @@ public class UserController {
 
 
     @GetMapping("/naver")
-    public ResponseEntity saveNaverUser(@RequestParam String code) throws IOException, ParseException {
+    public ResponseEntity saveNaverUser(@RequestBody String code) throws IOException, ParseException {
 
         //인증코드로 토큰, 유저정보 GET
         String token = ns.getToken(code);
