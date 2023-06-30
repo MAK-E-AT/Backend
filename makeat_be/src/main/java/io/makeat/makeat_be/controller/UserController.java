@@ -63,7 +63,7 @@ public class UserController {
         HttpSession session = request.getSession();
         session.setAttribute("firstInfoDto", firstInfoDto);
 
-        return new ResponseEntity<>("", HttpStatus.OK);
+        return new ResponseEntity<>(loginId, HttpStatus.OK);
     }
 
     @GetMapping("/additional-info")
