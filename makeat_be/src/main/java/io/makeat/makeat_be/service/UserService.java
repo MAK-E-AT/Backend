@@ -46,16 +46,20 @@ public class UserService {
         return user;
     }
 
-    public void saveUserInfo(SocialInfoDto socialInfoDto, AdditionalInfoDto additionalInfoDto, FirstInfoDto firstInfoDto) {
+    public void saveUserInfo(AdditionalInfoDto additionalInfoDto, FirstInfoDto firstInfoDto, String loginKind, String loginId) {
 
         // user
-        User user = userRepository.findUserByLoginKindAndLoginId(socialInfoDto.getLogin_kind(), socialInfoDto.getLogin_id());
+        User user = userRepository.findUserByLoginKindAndLoginId("kakao", "abc");
+        System.out.println(user);
 
         // bmi
         float bmi = additionalInfoDto.getWeight() / (additionalInfoDto.getHeight()/100 * additionalInfoDto.getHeight()/100);
 
+        System.out.println(user+ firstInfoDto.getName() + additionalInfoDto.getAge() + firstInfoDto.getGender() + additionalInfoDto.getHeight() + additionalInfoDto.getWeight() + additionalInfoDto.getTargetCalories()+ bmi + firstInfoDto.getAccessToken() + firstInfoDto.getRefreshToken());
+
+
         // UserInfoRepository에 저장
-        UserInfo userInfo = new UserInfo(user, firstInfoDto.getName(), additionalInfoDto.getAge(), firstInfoDto.getGender(), additionalInfoDto.getHeight(), additionalInfoDto.getWeight(), additionalInfoDto.getTarget_calories(), bmi, firstInfoDto.getAccessToken(), firstInfoDto.getRefreshToken());
+        UserInfo userInfo = new UserInfo(user, firstInfoDto.getName(), additionalInfoDto.getAge(), firstInfoDto.getGender(), additionalInfoDto.getHeight(), additionalInfoDto.getWeight(), additionalInfoDto.getTargetCalories(), bmi, firstInfoDto.getAccessToken(), firstInfoDto.getRefreshToken());
 
         userInfoRepository.save(userInfo);
     }

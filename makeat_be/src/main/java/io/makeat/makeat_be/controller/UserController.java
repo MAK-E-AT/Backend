@@ -42,6 +42,8 @@ public class UserController {
         String refreshToken = tokens[1];
         Map<String, Object> userInfo = ks.getUserInfo(accessToken);
 
+        log.info("accessToken: " + accessToken);
+
         // user 확인 및 신규 유저 저장
         User user = userService.login("kakao", userInfo.get("id").toString());
         if (user==null) {
@@ -53,24 +55,27 @@ public class UserController {
         String name = userInfo.get("nickname").toString();
         String gender = userInfo.get("gender").toString();
 
+        log.info("id: " + loginId, ", name: " + name, ", gender: " + gender);
+
         // 이름, 성별, 액세스 토큰, 리프레쉬 토큰 세션에 등록
         FirstInfoDto firstInfoDto = new FirstInfoDto(name, gender, accessToken, refreshToken);
 
         HttpSession session = request.getSession();
         session.setAttribute("firstInfoDto", firstInfoDto);
 
-        return new ResponseEntity<>(loginId, HttpStatus.OK);
+        return new ResponseEntity<>("", HttpStatus.OK);
     }
 
     @GetMapping("/additional-info")
-    public ResponseEntity saveAdditionalInfo (HttpServletRequest request, AdditionalInfoDto additionalInfoDto, SocialInfoDto socialInfoDto) throws IOException{
+    public ResponseEntity saveAdditionalInfo (HttpServletRequest request, @RequestBody AdditionalInfoDto additionalInfoDto, @RequestParam String loginKind, @RequestParam String loginId) throws IOException{
 
         // 이전에 세션에 등록된 정보 불러오기
         HttpSession session = request.getSession();
         FirstInfoDto firstInfoDto = (FirstInfoDto) session.getAttribute("firstInfoDto");
+        System.out.println(firstInfoDto);
 
         // 이전 세션 정보 + 추가정보 UserInfo 저장
-        userService.saveUserInfo(socialInfoDto, additionalInfoDto, firstInfoDto);
+        userService.saveUserInfo(additionalInfoDto, firstInfoDto, loginKind, loginId);
 
         return new ResponseEntity<>("", HttpStatus.OK);
     }
