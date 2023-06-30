@@ -63,7 +63,7 @@ public class UserController {
     }
 
     @GetMapping("/additional-info")
-    public ResponseEntity saveAdditionalInfo (HttpServletRequest request, AdditionalInfoDto additionalInfoDto, SocialInfoDto socialInfoDto) throws IOException{
+    public ResponseEntity saveAdditionalInfo (HttpServletRequest request, @RequestBody AdditionalInfoDto additionalInfoDto, @RequestBody SocialInfoDto socialInfoDto) throws IOException{
 
         // 이전에 세션에 등록된 정보 불러오기
         HttpSession session = request.getSession();
