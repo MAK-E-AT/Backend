@@ -33,7 +33,7 @@ public class UserController {
     private final UserService userService;
 
 
-    @PostMapping("/kakao")
+    @GetMapping("/kakao")
     public ResponseEntity saveKakaoUser(HttpServletRequest request, @RequestParam String code) throws IOException{
 
         //인증코드로 토큰, 유저정보 GET
@@ -62,7 +62,7 @@ public class UserController {
         return new ResponseEntity<>(loginId, HttpStatus.OK);
     }
 
-    @PostMapping("/additional-info")
+    @GetMapping("/additional-info")
     public ResponseEntity saveAdditionalInfo (HttpServletRequest request, AdditionalInfoDto additionalInfoDto, SocialInfoDto socialInfoDto) throws IOException{
 
         // 이전에 세션에 등록된 정보 불러오기
@@ -76,7 +76,7 @@ public class UserController {
     }
 
 
-    @PostMapping("/naver")
+    @GetMapping("/naver")
     public ResponseEntity saveNaverUser(@RequestParam String code) throws IOException, ParseException {
 
         //인증코드로 토큰, 유저정보 GET
