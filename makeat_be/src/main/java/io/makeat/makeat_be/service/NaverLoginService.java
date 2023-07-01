@@ -32,11 +32,11 @@ public class NaverLoginService {
      * @return
      * @throws IOException
      */
-    public String getToken(String code) throws IOException {
+    public String[] getTokens(String code) throws IOException {
 
         String host = "https://nid.naver.com/oauth2.0/token";
         URL url = new URL(host);
-        String token = "";
+        String[] tokens = new String[2];
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
         try {
             urlConnection.setRequestMethod("POST");
@@ -66,8 +66,10 @@ public class NaverLoginService {
             JSONParser parser = new JSONParser();
             JSONObject elem = (JSONObject) parser.parse(result);
 
-            token = elem.get("access_token").toString();
-            log.info("accessToken = " + token);
+            tokens[0] = elem.get("access_token").toString();
+            tokens[1] = elem.get("refresh_token").toString();
+            log.info("access_token = " + tokens[0]);
+            log.info("access_token = " + tokens[1]);
 
             br.close();
             bw.close();
@@ -76,7 +78,7 @@ public class NaverLoginService {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        return token;
+        return tokens;
     }
 
     /**

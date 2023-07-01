@@ -82,21 +82,29 @@ public class UserController {
 
 
     @GetMapping("/naver")
-    public ResponseEntity saveNaverUser(@RequestParam String code) throws IOException, ParseException {
+    public ResponseEntity saveNaverUser(HttpServletRequest request, @RequestParam String code) throws IOException, ParseException {
 
         //인증코드로 토큰, 유저정보 GET
-        String token = ns.getToken(code);
-        Map<String, Object> userInfo = ns.getUserInfo(token);
+        String[] tokens = ns.getTokens(code);
+        String accessToken = tokens[0];
+        String refreshToken = tokens[1];
+        Map<String, Object> userInfo = ks.getUserInfo(accessToken);
 
-        // user 확인 및 신규 유저 저장
-        User user = userService.login("naver", userInfo.get("id").toString());
-        if (user==null) {
-            return new ResponseEntity(null, null, HttpStatus.BAD_REQUEST);
-        }
+        // 네이버 userinfo에서 loginId, 이름, 성별 뽑기
+        String loginId = userInfo.get("id").toString();
+        String name = userInfo.get("nickname").toString();
+        String gender = userInfo.get("gender").toString();
 
-        UserInfoDto userInfoDto = userService.getUserInfo(user);
 
-        return new ResponseEntity(userInfoDto, null, HttpStatus.OK);
+        log.info("id: " + loginId, ", name: " + name, ", gender: " + gender);
+
+        // 이름, 성별, 액세스 토큰, 리프레쉬 토큰 세션에 등록
+        FirstInfoDto firstInfoDto = new FirstInfoDto(name, gender, accessToken, refreshToken);
+
+        HttpSession session = request.getSession();
+        session.setAttribute("firstInfoDto", firstInfoDto);
+
+        return new ResponseEntity(loginId, HttpStatus.OK);
     }
 
     @DeleteMapping
