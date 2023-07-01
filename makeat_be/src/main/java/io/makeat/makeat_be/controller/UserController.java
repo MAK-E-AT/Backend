@@ -34,7 +34,7 @@ public class UserController {
 
 
     @GetMapping("/kakao")
-    public ResponseEntity saveKakaoUser(HttpServletRequest request, @RequestParam String code) throws IOException{
+    public ResponseEntity getKakaoApi(HttpServletRequest request, @RequestParam String code) throws IOException{
 
         //인증코드로 토큰, 유저정보 GET
         String[] tokens = ks.getTokens(code);
@@ -43,12 +43,6 @@ public class UserController {
         Map<String, Object> userInfo = ks.getUserInfo(accessToken);
 
         log.info("accessToken: " + accessToken);
-
-        // user 확인 및 신규 유저 저장
-        User user = userService.login("kakao", userInfo.get("id").toString());
-        if (user==null) {
-            return new ResponseEntity(null, null, HttpStatus.BAD_REQUEST);
-        }
 
         // 카카오 userinfo에서 loginId, 이름, 성별 뽑기
         String loginId = userInfo.get("id").toString();
@@ -68,6 +62,12 @@ public class UserController {
 
     @GetMapping("/additional-info")
     public ResponseEntity saveAdditionalInfo (HttpServletRequest request, @RequestBody AdditionalInfoDto additionalInfoDto, @RequestParam String loginKind, @RequestParam String loginId) throws IOException{
+
+        // user 확인 및 신규 유저 저장
+        User user = userService.login(loginKind, loginId);
+        if (user==null) {
+            return new ResponseEntity(null, null, HttpStatus.BAD_REQUEST);
+        }
 
         // 이전에 세션에 등록된 정보 불러오기
         HttpSession session = request.getSession();
