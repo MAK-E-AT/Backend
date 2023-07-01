@@ -82,7 +82,7 @@ public class UserController {
 
 
     @GetMapping("/naver")
-    public ResponseEntity saveNaverUser(HttpServletRequest request, @RequestParam String code) throws IOException, ParseException {
+    public ResponseEntity getNaverApi(HttpServletRequest request, @RequestParam String code) throws IOException, ParseException {
 
         //인증코드로 토큰, 유저정보 GET
         String[] tokens = ns.getTokens(code);
@@ -94,7 +94,6 @@ public class UserController {
         String loginId = userInfo.get("id").toString();
         String name = userInfo.get("nickname").toString();
         String gender = userInfo.get("gender").toString();
-
 
         log.info("id: " + loginId, ", name: " + name, ", gender: " + gender);
 
