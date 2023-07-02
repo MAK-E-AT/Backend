@@ -110,16 +110,23 @@ public class KakaoLoginService {
 
             JSONParser parser = new JSONParser();
             JSONObject obj = (JSONObject) parser.parse(res);
+
+            // 로그 테스트 코드
             JSONObject kakao_account = (JSONObject) obj.get("kakao_account");
             JSONObject properties = (JSONObject) obj.get("properties");
 
+            log.info("kakao_account: " + kakao_account + "     properties: " + properties);
+            // 로그 테스트 코드 끝
+
             String id = obj.get("id").toString();
-            String nickname = properties.get("nickname").toString();
-            String gender = kakao_account.get("gender").toString();
+            String nickname = ((JSONObject) obj.get("properties")).get("nickname").toString();
+            String gender = ((JSONObject) obj.get("kakao_account")).get("gender").toString();
 
             result.put("id", id);
             result.put("nickname", nickname);
             result.put("gender", gender);
+
+            log.info("id: " + id, ", nickname: " + nickname, ", gender: " + gender);
 
             br.close();
 
