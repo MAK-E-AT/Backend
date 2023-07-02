@@ -42,14 +42,13 @@ public class UserController {
         String refreshToken = tokens[1];
         Map<String, Object> userInfo = ks.getUserInfo(accessToken);
 
+        log.info("user info: " + userInfo);
         log.info("accessToken: " + accessToken);
 
         // 카카오 userinfo에서 loginId, 이름, 성별 뽑기
         String loginId = userInfo.get("id").toString();
         String name = userInfo.get("nickname").toString();
         String gender = userInfo.get("gender").toString();
-
-        log.info("id: " + loginId, ", name: " + name, ", gender: " + gender);
 
         // 이름, 성별, 액세스 토큰, 리프레쉬 토큰 세션에 등록
         FirstInfoDto firstInfoDto = new FirstInfoDto(name, gender, accessToken, refreshToken);
