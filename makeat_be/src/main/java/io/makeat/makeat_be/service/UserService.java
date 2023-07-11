@@ -50,17 +50,15 @@ public class UserService {
 
         // user
         User user = userRepository.findUserByLoginKindAndLoginId("kakao", "abc");
-        System.out.println(user);
+        log.info("user: " + user);
 
         // bmi
         float bmi = additionalInfoDto.getWeight() / (additionalInfoDto.getHeight()/100 * additionalInfoDto.getHeight()/100);
 
-        System.out.println(user+ firstInfoDto.getName() + additionalInfoDto.getAge() + firstInfoDto.getGender() + additionalInfoDto.getHeight() + additionalInfoDto.getWeight() + additionalInfoDto.getTargetCalories()+ bmi + firstInfoDto.getAccessToken() + firstInfoDto.getRefreshToken());
-
+        log.info("user_id: " + user.getUserId());
 
         // UserInfoRepository에 저장
         UserInfo userInfo = new UserInfo(user, firstInfoDto.getName(), additionalInfoDto.getAge(), firstInfoDto.getGender(), additionalInfoDto.getHeight(), additionalInfoDto.getWeight(), additionalInfoDto.getTargetCalories(), bmi, firstInfoDto.getAccessToken(), firstInfoDto.getRefreshToken());
-
         userInfoRepository.save(userInfo);
     }
 

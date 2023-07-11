@@ -1,9 +1,8 @@
 package io.makeat.makeat_be.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+
+import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,4 +20,25 @@ public class Nutrient {
     private float fat;
     private float na;
     private float kcal;
+
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+    }
+
+    public Nutrient() {
+
+    }
+
+    public Nutrient(float carbo, float protein, float fat, float na, float kcal) {
+        this.carbo = carbo;
+        this.protein = protein;
+        this.fat = fat;
+        this.na = na;
+        this.kcal = kcal;
+    }
 }
