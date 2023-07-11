@@ -48,4 +48,8 @@ public class UserInfo {
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
     }
+
+    public UserInfo() {
+
+    }
 }
